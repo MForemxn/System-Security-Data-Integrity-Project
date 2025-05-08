@@ -14,8 +14,21 @@ class ImmutableLogHandler(RotatingFileHandler):
         self.previous_hash = hashlib.sha256(f"{self.previous_hash}{record.msg}".encode()).hexdigest()
 
 def setup_logger():
-    handler = ImmutableLogHandler('app_activity.log', maxBytes=10000, backupCount=3)
+    # Create formatter
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    
+    # Setup file handler
+    file_handler = ImmutableLogHandler('app_activity.log', maxBytes=10000, backupCount=3)
+    file_handler.setFormatter(formatter)
+    
+    # Setup console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    
+    # Setup logger
     logger = logging.getLogger('app_logger')
     logger.setLevel(logging.INFO)
-    logger.addHandler(handler)
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    
     return logger 
