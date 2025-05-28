@@ -139,7 +139,7 @@ class CryptoGUI(QMainWindow):
         self.create_file_operations_tab(tabs)
         self.create_demo_tab(tabs)
         self.create_history_tab(tabs)
-        self.create_tutorials_tab(tabs)  # New tutorials tab
+        self.create_tutorials_tab(tabs)
         
         # Add status bar
         self.statusBar().showMessage("Ready to explore cryptography!")
@@ -231,20 +231,57 @@ class CryptoGUI(QMainWindow):
         gen_layout = QVBoxLayout()
         
         generate_btn = QPushButton("Generate New Key Pair")
-        generate_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #3498db;
+        generate_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {self.current_theme['button']};
                 color: white;
                 padding: 10px;
                 border-radius: 5px;
                 font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #2980b9;
-            }
+            }}
+            QPushButton:hover {{
+                background-color: {self.current_theme['button_hover']};
+            }}
         """)
         generate_btn.clicked.connect(self.generate_new_keys)
         gen_layout.addWidget(generate_btn)
+        
+        # Add export/import buttons
+        key_management_layout = QHBoxLayout()
+        
+        export_btn = QPushButton("Export Keys")
+        export_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {self.current_theme['success']};
+                color: white;
+                padding: 8px;
+                border-radius: 5px;
+                font-weight: bold;
+            }}
+            QPushButton:hover {{
+                background-color: {self.current_theme['success_hover']};
+            }}
+        """)
+        export_btn.clicked.connect(self.export_keys)
+        key_management_layout.addWidget(export_btn)
+        
+        import_btn = QPushButton("Import Keys")
+        import_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {self.current_theme['button']};
+                color: white;
+                padding: 8px;
+                border-radius: 5px;
+                font-weight: bold;
+            }}
+            QPushButton:hover {{
+                background-color: {self.current_theme['button_hover']};
+            }}
+        """)
+        import_btn.clicked.connect(self.import_keys)
+        key_management_layout.addWidget(import_btn)
+        
+        gen_layout.addLayout(key_management_layout)
         
         self.private_key_display = QTextEdit()
         self.private_key_display.setReadOnly(True)
@@ -271,30 +308,30 @@ class CryptoGUI(QMainWindow):
         verify_layout.addWidget(self.verify_key_input)
         
         verify_key_btn = QPushButton("Verify Key")
-        verify_key_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #2ecc71;
+        verify_key_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {self.current_theme['success']};
                 color: white;
                 padding: 10px;
                 border-radius: 5px;
                 font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #27ae60;
-            }
+            }}
+            QPushButton:hover {{
+                background-color: {self.current_theme['success_hover']};
+            }}
         """)
         verify_key_btn.clicked.connect(self.verify_key_action)
         verify_layout.addWidget(verify_key_btn)
         
         self.key_verify_result = QLabel("")
-        self.key_verify_result.setStyleSheet("""
-            QLabel {
-                background-color: #f8f9fa;
+        self.key_verify_result.setStyleSheet(f"""
+            QLabel {{
+                background-color: {self.current_theme['background']};
                 padding: 10px;
                 border-radius: 5px;
-                border: 1px solid #dee2e6;
+                border: 1px solid {self.current_theme['border']};
                 font-weight: bold;
-            }
+            }}
         """)
         verify_layout.addWidget(self.key_verify_result)
         
@@ -837,6 +874,295 @@ class CryptoGUI(QMainWindow):
         
         tabs.addTab(history_widget, "📜 History")
         
+    def create_tutorials_tab(self, tabs):
+        """Create the tutorials tab with interactive learning content"""
+        tutorial_widget = QWidget()
+        layout = QVBoxLayout(tutorial_widget)
+        
+        # Add explanation
+        explanation = InteractiveLabel(
+            "📚 Interactive Tutorials",
+            "Learn about cryptography through interactive tutorials and examples."
+        )
+        layout.addWidget(explanation)
+        
+        # Tutorial selection
+        tutorial_group = QGroupBox("Choose a Tutorial")
+        tutorial_layout = QVBoxLayout()
+        
+        self.tutorial_list = QComboBox()
+        self.tutorial_list.addItems([
+            "Introduction to Cryptography",
+            "Understanding Key Pairs",
+            "Digital Signatures Explained",
+            "HMAC and Data Integrity",
+            "Security Best Practices"
+        ])
+        self.tutorial_list.setStyleSheet(f"""
+            QComboBox {{
+                padding: 5px;
+                border: 1px solid {self.current_theme['border']};
+                border-radius: 3px;
+                background: {self.current_theme['background']};
+                color: {self.current_theme['text']};
+            }}
+            QComboBox:hover {{
+                border-color: {self.current_theme['button']};
+            }}
+        """)
+        self.tutorial_list.currentIndexChanged.connect(self.update_tutorial_content)
+        tutorial_layout.addWidget(self.tutorial_list)
+        tutorial_group.setLayout(tutorial_layout)
+        layout.addWidget(tutorial_group)
+        
+        # Tutorial content
+        content_group = QGroupBox("Tutorial Content")
+        content_layout = QVBoxLayout()
+        
+        self.tutorial_content = QTextEdit()
+        self.tutorial_content.setReadOnly(True)
+        self.tutorial_content.setStyleSheet(f"""
+            QTextEdit {{
+                background-color: {self.current_theme['background']};
+                color: {self.current_theme['text']};
+                border: 1px solid {self.current_theme['border']};
+                border-radius: 5px;
+                padding: 10px;
+            }}
+        """)
+        content_layout.addWidget(self.tutorial_content)
+        
+        # Interactive example section
+        example_group = QGroupBox("Try It Yourself")
+        example_layout = QVBoxLayout()
+        
+        self.tutorial_example = QTextEdit()
+        self.tutorial_example.setPlaceholderText("Try the example here...")
+        example_layout.addWidget(self.tutorial_example)
+        
+        run_example_btn = QPushButton("Run Example")
+        run_example_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {self.current_theme['button']};
+                color: white;
+                padding: 8px;
+                border-radius: 5px;
+                font-weight: bold;
+            }}
+            QPushButton:hover {{
+                background-color: {self.current_theme['button_hover']};
+            }}
+        """)
+        run_example_btn.clicked.connect(self.run_tutorial_example)
+        example_layout.addWidget(run_example_btn)
+        
+        self.example_output = QTextEdit()
+        self.example_output.setReadOnly(True)
+        self.example_output.setPlaceholderText("Example output will appear here...")
+        example_layout.addWidget(self.example_output)
+        
+        example_group.setLayout(example_layout)
+        content_layout.addWidget(example_group)
+        
+        content_group.setLayout(content_layout)
+        layout.addWidget(content_group)
+        
+        tabs.addTab(tutorial_widget, "📚 Tutorials")
+        
+    def update_tutorial_content(self):
+        """Update the tutorial content based on selection"""
+        tutorial = self.tutorial_list.currentText()
+        content = {
+            "Introduction to Cryptography": """
+                <h2>Introduction to Cryptography</h2>
+                <p>Cryptography is the practice of securing information through mathematical techniques.</p>
+                <h3>Key Concepts:</h3>
+                <ul>
+                    <li>Confidentiality: Keeping information secret</li>
+                    <li>Integrity: Ensuring information hasn't been altered</li>
+                    <li>Authentication: Verifying the source of information</li>
+                </ul>
+                <h3>Try it yourself:</h3>
+                <p>Enter a message below to see how it can be secured using different cryptographic techniques.</p>
+            """,
+            "Understanding Key Pairs": """
+                <h2>Understanding Key Pairs</h2>
+                <p>Public key cryptography uses a pair of keys:</p>
+                <ul>
+                    <li>Public Key: Can be shared with anyone</li>
+                    <li>Private Key: Must be kept secret</li>
+                </ul>
+                <h3>Try it yourself:</h3>
+                <p>Generate a key pair and see how they work together.</p>
+            """,
+            "Digital Signatures Explained": """
+                <h2>Digital Signatures</h2>
+                <p>Digital signatures provide:</p>
+                <ul>
+                    <li>Authentication: Proves who created the message</li>
+                    <li>Integrity: Ensures the message hasn't been altered</li>
+                    <li>Non-repudiation: Sender cannot deny sending the message</li>
+                </ul>
+                <h3>Try it yourself:</h3>
+                <p>Sign a message and verify its authenticity.</p>
+            """,
+            "HMAC and Data Integrity": """
+                <h2>HMAC (Hash-based Message Authentication Code)</h2>
+                <p>HMAC provides:</p>
+                <ul>
+                    <li>Message authentication</li>
+                    <li>Data integrity verification</li>
+                    <li>Protection against tampering</li>
+                </ul>
+                <h3>Try it yourself:</h3>
+                <p>Generate an HMAC for a message and verify its integrity.</p>
+            """,
+            "Security Best Practices": """
+                <h2>Security Best Practices</h2>
+                <p>Important security guidelines:</p>
+                <ul>
+                    <li>Never share your private key</li>
+                    <li>Use strong, unique keys</li>
+                    <li>Regularly rotate keys</li>
+                    <li>Verify signatures before trusting data</li>
+                    <li>Keep software updated</li>
+                </ul>
+                <h3>Try it yourself:</h3>
+                <p>Practice secure key management and verification.</p>
+            """
+        }
+        self.tutorial_content.setHtml(content.get(tutorial, "Select a tutorial to begin."))
+        
+    def run_tutorial_example(self):
+        """Run the selected tutorial example"""
+        tutorial = self.tutorial_list.currentText()
+        example_input = self.tutorial_example.toPlainText()
+        
+        try:
+            if tutorial == "Introduction to Cryptography":
+                # Simple encryption example
+                if example_input:
+                    encoded = base64.b64encode(example_input.encode()).decode()
+                    self.example_output.setText(f"Encoded message: {encoded}")
+                else:
+                    self.example_output.setText("Please enter a message to encode.")
+                    
+            elif tutorial == "Understanding Key Pairs":
+                if not self.private_key:
+                    self.generate_new_keys()
+                self.example_output.setText(
+                    f"Generated Key Pair:\n\n"
+                    f"Public Key:\n{self.public_key}\n\n"
+                    f"Private Key:\n{self.private_key}"
+                )
+                
+            elif tutorial == "Digital Signatures Explained":
+                if not self.private_key:
+                    self.generate_new_keys()
+                if example_input:
+                    signature = sign_data(example_input, self.private_key)
+                    self.example_output.setText(
+                        f"Message: {example_input}\n\n"
+                        f"Signature: {signature}\n\n"
+                        f"Try verifying this signature in the Digital Signatures tab!"
+                    )
+                else:
+                    self.example_output.setText("Please enter a message to sign.")
+                    
+            elif tutorial == "HMAC and Data Integrity":
+                if example_input:
+                    key = "tutorial_key"
+                    signature = hmac.new(key.encode(), example_input.encode(), hashlib.sha256).hexdigest()
+                    self.example_output.setText(
+                        f"Message: {example_input}\n\n"
+                        f"HMAC: {signature}\n\n"
+                        f"Try verifying this HMAC in the HMAC Operations tab!"
+                    )
+                else:
+                    self.example_output.setText("Please enter a message to generate HMAC for.")
+                    
+            elif tutorial == "Security Best Practices":
+                self.example_output.setText(
+                    "Security Checklist:\n\n"
+                    "✓ Generate new keys\n"
+                    "✓ Sign a message\n"
+                    "✓ Verify a signature\n"
+                    "✓ Generate an HMAC\n"
+                    "✓ Verify file integrity\n\n"
+                    "Complete these tasks to practice secure operations!"
+                )
+                
+        except Exception as e:
+            self.example_output.setText(f"Error: {str(e)}")
+            
+    def export_keys(self):
+        """Export keys to files"""
+        if not self.private_key or not self.public_key:
+            QMessageBox.warning(self, "Warning", "Please generate keys first!")
+            return
+            
+        try:
+            # Export private key
+            private_path, _ = QFileDialog.getSaveFileName(
+                self,
+                "Save Private Key",
+                "",
+                "PEM Files (*.pem);;All Files (*.*)"
+            )
+            if private_path:
+                with open(private_path, "w") as f:
+                    f.write(str(self.private_key))
+                    
+            # Export public key
+            public_path, _ = QFileDialog.getSaveFileName(
+                self,
+                "Save Public Key",
+                "",
+                "PEM Files (*.pem);;All Files (*.*)"
+            )
+            if public_path:
+                with open(public_path, "w") as f:
+                    f.write(str(self.public_key))
+                    
+            QMessageBox.information(self, "Success", "Keys exported successfully!")
+            self.add_to_history("Export", "Exported key pair")
+            
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Failed to export keys: {str(e)}")
+            
+    def import_keys(self):
+        """Import keys from files"""
+        try:
+            # Import private key
+            private_path, _ = QFileDialog.getOpenFileName(
+                self,
+                "Open Private Key",
+                "",
+                "PEM Files (*.pem);;All Files (*.*)"
+            )
+            if private_path:
+                with open(private_path, "r") as f:
+                    self.private_key = f.read()
+                    self.private_key_display.setText(self.private_key)
+                    
+            # Import public key
+            public_path, _ = QFileDialog.getOpenFileName(
+                self,
+                "Open Public Key",
+                "",
+                "PEM Files (*.pem);;All Files (*.*)"
+            )
+            if public_path:
+                with open(public_path, "r") as f:
+                    self.public_key = f.read()
+                    self.public_key_display.setText(self.public_key)
+                    
+            QMessageBox.information(self, "Success", "Keys imported successfully!")
+            self.add_to_history("Import", "Imported key pair")
+            
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Failed to import keys: {str(e)}")
+
     def update_demo_description(self):
         """Update the demo description based on the selected scenario"""
         scenario = self.demo_scenarios.currentText()
@@ -904,7 +1230,7 @@ class CryptoGUI(QMainWindow):
                     show_step(2, "Generating new key pair...")
                     self.generate_new_keys()
                 
-                data = self.demo_input.toPlainText() or "Hello, this is a demo message!"
+                data = self.demo_input.toPlainText()
                 signature = sign_data(data, self.private_key)
                 show_step(3, f"Verifying signature for message: {data[:30]}...")
                 
@@ -921,7 +1247,7 @@ class CryptoGUI(QMainWindow):
                 
             elif scenario == "HMAC Verification":
                 show_step(1, "Preparing HMAC verification...")
-                data = self.demo_input.toPlainText() or "Hello, this is a demo message!"
+                data = self.demo_input.toPlainText()
                 key = "demo_secret_key"
                 signature = hmac.new(key.encode(), data.encode(), hashlib.sha256).hexdigest()
                 
