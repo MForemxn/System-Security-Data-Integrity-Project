@@ -1,31 +1,44 @@
-# Security Demo Application
+# Cryptographic Operations GUI - Interactive Learning Tool
 
-A Flask-based web application that demonstrates various security features and data integrity concepts. This application serves as an educational tool to understand and test different security mechanisms.
+A PyQt6-based desktop application that provides an interactive interface for learning and experimenting with various cryptographic operations. This application serves as an educational tool to understand and practice different cryptographic concepts in a user-friendly environment.
 
 ## Features
 
-- **Authentication & Authorization**
-  - Secure login system
-  - Role-based access control (Admin/User roles)
-  - Session management
-  - Authentication bypass simulation
+- **Key Management**
+  - Generate RSA key pairs
+  - Export/Import keys
+  - Key format verification
+  - Secure key storage
 
-- **Data Integrity**
-  - File verification with SHA-256 hashing
-  - Configuration management with digital signatures
-  - TPM (Trusted Platform Module) simulation
-  - Immutable logging system
+- **Digital Signatures**
+  - Create digital signatures
+  - Verify signatures
+  - Message authentication
+  - Data integrity verification
 
-- **Security Testing**
-  - Authentication bypass simulation
-  - Configuration tampering simulation
-  - File integrity testing
-  - Secure code execution (Admin only)
+- **HMAC Operations**
+  - Generate HMAC (Hash-based Message Authentication Code)
+  - Verify HMAC signatures
+  - Data integrity checks
+  - Key-based authentication
+
+- **File Operations**
+  - Sign files
+  - Verify file signatures
+  - File integrity checking
+  - Secure file handling
+
+- **Interactive Learning**
+  - Step-by-step tutorials
+  - Interactive demos
+  - Operation history tracking
+  - Real-time feedback
 
 ## Prerequisites
 
 - Python 3.8 or higher
-- pip (Python package manager)
+- PyQt6
+- cryptography library
 
 ## Installation
 
@@ -48,113 +61,108 @@ A Flask-based web application that demonstrates various security features and da
 
 ## Running the Application
 
-1. Start the Flask server:
+1. Start the application:
    ```bash
-   python app.py
+   python security/crypto_gui.py
    ```
 
-2. Access the application:
-   - Open your web browser
-   - Navigate to `http://localhost:5000`
+2. The GUI will launch with the following tabs:
+   - 🔑 Key Management
+   - ✍️ Digital Signatures
+   - 🔐 HMAC Operations
+   - 📁 File Operations
+   - 🎮 Demo Mode
+   - 📜 History
+   - 📚 Tutorials
 
 ## Usage Guide
 
-### Login Credentials
+### Key Management
+1. Generate new key pairs
+2. Export/Import keys
+3. Verify key formats
+4. Manage key storage
 
-- **Admin Account**
-  - Username: `admin`
-  - Password: `SecurePassword123!`
+### Digital Signatures
+1. Sign messages using private key
+2. Verify signatures using public key
+3. Test signature tampering
+4. Practice message authentication
 
-- **Regular User Account**
-  - Username: `user`
-  - Password: `UserPassword456!`
+### HMAC Operations
+1. Generate HMAC for data
+2. Verify HMAC signatures
+3. Test data integrity
+4. Practice key-based authentication
 
-### Available Features
+### File Operations
+1. Sign files
+2. Verify file signatures
+3. Check file integrity
+4. Practice secure file handling
 
-#### For All Users
-1. **File Verification**
-   - Upload any file to verify its integrity
-   - View SHA-256 hash of the file
-   - Test file integrity checks
-
-2. **System Status**
-   - View current system status
-   - Check TPM attestation status
-
-#### Admin Only Features
-1. **Configuration Management**
-   - Toggle debug mode
-   - Toggle maintenance mode
-   - Test configuration tampering simulation
-
-2. **Code Execution**
-   - Execute Python code in a controlled environment
-   - View execution results
-   - Test secure code execution
-
-### Security Testing
-
-1. **Authentication Bypass Simulation**
-   - Use the "Simulate Auth Bypass" button on the login page
-   - Demonstrates what happens when authentication is bypassed
-
-2. **Configuration Tampering**
-   - Use the "Simulate Config Tampering" button in the dashboard
-   - Shows the effects of unauthorized configuration changes
-
-3. **File Integrity Testing**
-   - Upload files to test integrity verification
-   - View hash values and verification results
-
-## Security Features
-
-### 1. Immutable Logging
-- All system activities are logged with cryptographic chaining
-- Each log entry is linked to the previous one
-- Prevents log tampering
-
-### 2. TPM Simulation
-- Simulates hardware-based security features
-- Provides system integrity verification
-- Demonstrates secure boot concepts
-
-### 3. Digital Signatures
-- Configuration changes are digitally signed
-- Prevents unauthorized modifications
-- Demonstrates code signing concepts
-
-### 4. Secure Headers
-- Content Security Policy (CSP)
-- X-Content-Type-Options
-- X-Frame-Options
+### Interactive Learning
+1. Follow step-by-step tutorials
+2. Try interactive demos
+3. Track operation history
+4. Learn through practice
 
 ## Project Structure
 
 ```
 .
-├── app.py              # Main application file
-├── requirements.txt    # Python dependencies
-├── security/          # Security-related modules
-│   ├── crypto.py      # Cryptographic functions
-│   ├── middleware.py  # Security middleware
-│   └── tpm.py         # TPM simulator
-├── models/            # Data models
-│   └── database.py    # Database simulation
-├── utils/            # Utility functions
-│   └── logging.py     # Logging setup
-└── templates/        # HTML templates
-    ├── index.html    # Homepage
-    ├── login.html    # Login page
-    └── dashboard.html # Dashboard
+├── security/
+│   ├── crypto_gui.py    # Main GUI application
+│   └── crypto.py        # Cryptographic functions
+├── requirements.txt     # Python dependencies
+└── README.md           # Project documentation
 ```
 
-## Security Notes
+## Security Features
 
-1. This is a demonstration application and should not be used in production without proper security hardening
-2. The TPM simulation is just that - a simulation. Real TPM hardware would be needed for production use
-3. The code execution feature should be used with extreme caution
-4. Default passwords should be changed in a production environment
-5. The application includes intentionally vulnerable features for educational purposes
+### 1. Key Management
+- Secure key generation
+- PEM format support
+- Key validation
+- Safe key storage
+
+### 2. Digital Signatures
+- RSA-based signatures
+- Message authentication
+- Data integrity verification
+- Non-repudiation support
+
+### 3. HMAC Operations
+- SHA-256 based HMAC
+- Key-based authentication
+- Data integrity checks
+- Tamper detection
+
+### 4. File Security
+- File signing
+- Signature verification
+- Integrity checking
+- Secure file handling
+
+## Educational Value
+
+1. **Interactive Learning**
+   - Hands-on experience with cryptographic operations
+   - Real-time feedback on operations
+   - Step-by-step tutorials
+   - Visual demonstration of concepts
+
+2. **Security Best Practices**
+   - Proper key management
+   - Secure signature verification
+   - Data integrity protection
+   - Safe file handling
+
+3. **Practical Applications**
+   - Message signing
+   - File verification
+   - Data integrity checks
+   - Authentication practices
 
 ## Contributing
 
